@@ -1,7 +1,7 @@
 var promise = require("promise");
-var http = require("http");
+var request = require("request")
 
-exports.findServers = async function (req, res, next) {
+exports.findServers = async function (req, res) {
     var data = req.body;
     var availabe_servers = [];
     try {
@@ -11,18 +11,17 @@ exports.findServers = async function (req, res, next) {
             "http://offline.bosta.co",
             "http://google.com"
         ];
-        servers.forEach(url => {
+        servers.forEach(async (url) => {
             check_server(url).then(
                 function (url) {
                     availabe_servers.push(url);
                 },
-                function (err) {
-                    console.log(url + " failed");
-                });
+                function (err) {}
+            );
         });
-        console.log(availabe_servers)
-        res.status(200).send({
-            "availabe_servers": availabe_servers
+        return res.status(200).json({
+            status: 200,
+            data: availabe_servers
         });
 
     } catch (e) {
@@ -39,16 +38,18 @@ function check_server(url) {
         var timer = setTimeout(function () {
             reject("timeout");
         }, timeout);
+        var options = {
+            url: url,
 
-        const req = http.get(url, function (res) {
-            if (res.statusCode >= 200 && res.statusCode <= 299) {
-                fullfill(url);
-            } else {
-                reject(url);
+        }
+        request.get(options, function (req, res, err) {
+            if (err) {
+                reject(err);
             }
-        });
-        req.setTimeout(timeout, function () {
-            reject("timeout");
+            if (res.statusCode <= 200 || res.statusCode > 300) {
+                fullfill(url);
+            }
+
         });
 
     });
