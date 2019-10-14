@@ -1,5 +1,5 @@
 var promise = require("promise");
-var request = require("request")
+var request = require("request");
 
 exports.findServers = async function (req, res) {
     var data = req.body;
@@ -9,14 +9,17 @@ exports.findServers = async function (req, res) {
             "http://doesNotExist.bosta.co",
             "http://bosta.co",
             "http://offline.bosta.co",
-            "http://google.com"
+            "http://google.com",
         ];
         servers.forEach(async (url) => {
             check_server(url).then(
                 function (url) {
+                    console.log("fillfull ", url);
                     availabe_servers.push(url);
                 },
-                function (err) {}
+                function (err) {
+                    //console.log(err);
+                }
             );
         });
         return res.status(200).json({
@@ -42,14 +45,14 @@ function check_server(url) {
             url: url,
 
         }
-        request.get(options, function (req, res, err) {
+        request.get(options, function(err, res) {
             if (err) {
+                console.log("err");
                 reject(err);
             }
             if (res.statusCode <= 200 || res.statusCode > 300) {
                 fullfill(url);
             }
-
         });
 
     });
