@@ -3,6 +3,7 @@ var request = require("request");
 
 exports.findServers = async function (req, res) {
     var data = req.body;
+    var promise_list = [];
     var availabe_servers = [];
     try {
         servers = [
@@ -12,20 +13,28 @@ exports.findServers = async function (req, res) {
             "http://google.com",
         ];
         servers.forEach(async (url) => {
-            check_server(url).then(
-                function (url) {
-                    console.log("fillfull ", url);
-                    availabe_servers.push(url);
-                },
-                function (err) {
-                    //console.log(err);
-                }
-            );
+            promise_list.push(
+                check_server(url).then(
+                    function (url) {
+                        availabe_servers.push(url);
+                    },
+                    function (err) {
+                        console.log(err);
+                    }
+                )
+            )
         });
-        return res.status(200).json({
-            status: 200,
-            data: availabe_servers
-        });
+        Promise.all(promise_list).then(function () {
+            return res.status(200).json({
+                status: 200,
+                data: availabe_servers
+            });
+        }).catch(function () {
+            return res.status(204).json({
+                status: 204
+            });
+        })
+
 
     } catch (e) {
         return res.status(400).json({
@@ -45,9 +54,8 @@ function check_server(url) {
             url: url,
 
         }
-        request.get(options, function(err, res) {
+        request.get(options, function (err, res) {
             if (err) {
-                console.log("err");
                 reject(err);
             }
             if (res.statusCode <= 200 || res.statusCode > 300) {

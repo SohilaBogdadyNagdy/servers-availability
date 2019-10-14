@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(routers)
 
 
-const PORT = 7000;
+const PORT = 5500;
 
 app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`)
