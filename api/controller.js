@@ -25,9 +25,9 @@ exports.findServers = async function (req, res) {
             availabe_servers.sort(function (a, b) {
                 return a.priority - b.priority
             });
-            return res.status(200).json(
-                availabe_servers[availabe_servers.length - 1]
-            );
+            return res.status(200).json({
+                "online_server": availabe_servers[availabe_servers.length - 1]["url"]
+            });
         }).catch(function () {
             return res.status(400).json({
                 message: "All servers are offline"
@@ -51,7 +51,7 @@ function check_server(url) {
         }, timeout);
         var options = {
             url: url,
-            timeout:timeout
+            timeout: timeout
         }
         request.get(options, function (err, res) {
             if (err) {

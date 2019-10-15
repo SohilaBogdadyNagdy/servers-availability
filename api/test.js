@@ -1,7 +1,7 @@
 var supertest = require("supertest");
 var should = require("should");
 
-var server = supertest.agent("http://localhost:5000");
+var server = supertest.agent("http://localhost:5500");
 var data = [{
         "url": "http://doesNotExist.bosta.co",
         "priority": 1
@@ -20,16 +20,15 @@ var data = [{
     }
 ]
 describe("test list all availabe servers", function () {
-    describe("it should return array", function (done) {
+    describe("it should return online server that has the lowest priority", function (done) {
         server
             .post("/available-servers")
             .send(data)
             .expect("Content-Type", /json/)
             .expect(200)
-            .end(function (req, res) {
+            .end(function (err, res) {
                 res.status.should.equal(200);
-                // done();
-
+                res.body["online_server"].should.equal("http://bosta.co")
             })
 
     })
