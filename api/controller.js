@@ -22,10 +22,10 @@ exports.findServers = async function (req, res) {
             )
         });
         Promise.all(promise_list).then(function () {
-            return res.status(200).json({
-                status: 200,
-                data: availabe_servers
+            availabe_servers.sort(function (a, b) {
+                return a.priority - b.priority
             });
+            return res.status(200).json(availabe_servers);
         }).catch(function () {
             return res.status(204).json({
                 status: 204
