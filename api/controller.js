@@ -51,7 +51,7 @@ function check_server(url) {
         }, timeout);
         var options = {
             url: url,
-
+            timeout:timeout
         }
         request.get(options, function (err, res) {
             if (err) {
