@@ -25,10 +25,12 @@ exports.findServers = async function (req, res) {
             availabe_servers.sort(function (a, b) {
                 return a.priority - b.priority
             });
-            return res.status(200).json(availabe_servers);
+            return res.status(200).json(
+                availabe_servers[availabe_servers.length - 1]
+            );
         }).catch(function () {
-            return res.status(204).json({
-                status: 204
+            return res.status(400).json({
+                message: "All servers are offline"
             });
         })
 
