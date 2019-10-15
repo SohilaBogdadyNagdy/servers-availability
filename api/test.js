@@ -33,3 +33,16 @@ describe("test list all availabe servers", function () {
 
     })
 });
+
+describe("test post empty list", function () {
+    describe("it should return bad request", function (done) {
+        server
+            .post("/available-servers")
+            .send([])
+            .expect(400)
+            .end(function (err, res) {
+                res.status.should.equal(400);
+            })
+
+    })
+});
