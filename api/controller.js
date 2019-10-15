@@ -6,13 +6,11 @@ exports.findServers = async function (req, res) {
     var promise_list = [];
     var availabe_servers = [];
     try {
-        servers = [
-            "http://doesNotExist.bosta.co",
-            "http://bosta.co",
-            "http://offline.bosta.co",
-            "http://google.com",
-        ];
-        servers.forEach(async (url) => {
+        var servers_url = [];
+        data.forEach(obj => {
+            servers_url.push(obj["url"])
+        });
+        servers_url.forEach(async (url) => {
             promise_list.push(
                 check_server(url).then(
                     function (url) {
