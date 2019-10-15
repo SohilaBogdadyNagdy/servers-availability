@@ -6,15 +6,14 @@ exports.findServers = async function (req, res) {
     var promise_list = [];
     var availabe_servers = [];
     try {
-        var servers_url = [];
-        data.forEach(obj => {
-            servers_url.push(obj["url"])
-        });
-        servers_url.forEach(async (url) => {
+        data.forEach(async obj => {
             promise_list.push(
-                check_server(url).then(
+                check_server(obj["url"]).then(
                     function (url) {
-                        availabe_servers.push(url);
+                        availabe_servers.push({
+                            "url": url,
+                            "priority": obj["priority"]
+                        });
                     },
                     function (err) {
                         console.log(err);
