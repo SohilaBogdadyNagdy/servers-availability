@@ -1,5 +1,6 @@
 var supertest = require("supertest");
 var should = require("should");
+var nock = require("nock");
 
 var server = supertest.agent("http://localhost:5500");
 var data = [{
@@ -21,6 +22,10 @@ var data = [{
 ]
 describe("test list all availabe servers", function () {
     describe("it should return online server that has the lowest priority", function (done) {
+        nock("http://doesNotExist.bosta.co").get("/").reply(200);
+        nock("http://bosta.co").get("/").reply(200);
+        nock("http://offline.bosta.co").get("/").reply(302);
+        nock("http://google.com").get("/").reply(200);
         server
             .post("/available-servers")
             .send(data)
